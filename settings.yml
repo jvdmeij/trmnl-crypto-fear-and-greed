@@ -1,0 +1,10 @@
+---
+strategy: polling
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+polling_url: https://api.alternative.me/fng/?limit=31
+polling_headers: ''
+name: Crypto Fear & Greed Index
+refresh_interval: 720

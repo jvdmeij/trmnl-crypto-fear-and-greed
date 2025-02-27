@@ -1,0 +1,207 @@
+{% assign fgToday = data[0] %}
+{% assign fgYesterday = data[1] %}
+{% assign fgWeek = data[7] %}
+{% assign fgMonth = data[30] %}
+{% assign lastUpdate = fgToday:timestamp | date: "%b %d" %}
+
+<!-- import Highcharts libraries -->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/pattern-fill.js"></script>
+
+<div class="layout layout--col gap--none">
+  <div class="grid">
+    <div class="col--span-1 col--center">
+      <div id="day_all" class="w-[340px] mt--20"></div>
+    </div>
+    <div class="col--span-1 gap--large">
+      <div class="flex flex--col gap--medium w--full flex--center">
+        <div class="grid grid--cols-1">
+          <div class="item">
+            <div class="meta"></div>
+            <div class="content">
+              <span class="value value--tnums value--small">{{ fgToday:value }} {{ fgToday:value_classification }}</span>
+              <span class="label">Today</span>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid--cols-1">
+          <div class="item">
+            <div class="meta"></div>
+            <div class="content">
+              <span class="value value--small value--tnums text--gray-2">{{ fgWeek:value }} {{ fgWeek:value_classification }}</span>
+              <span class="label"><p class="text--gray-2">Last week</p></span>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid--cols-1">
+          <div class="item">
+            <div class="meta"></div>
+            <div class="content">
+              <span class="value value--xsmall value--tnums text--gray-3">{{ fgMonth:value }} {{ fgMonth:value_classification }}</span>
+              <span class="label"><p class="text--gray-3">Last month</p></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="title_bar">
+  <img class="image" src="/images/plugins/trmnl--render.svg" />
+  <span class="title">Crypto Fear & Greed Index {{ lastUpdate}} </span>
+  <span class="instance">alternative.me</span>
+</div>
+
+<script type="text/javascript">
+  var weeklyScore = {{ fgToday:value }};
+
+  function createGauge(score, day, opts) {
+    opts ||= {
+      title: null,
+      height: "80%",
+      labels: {
+        distance: 15,
+        style: {
+          fontSize: "16px"
+        }
+      },
+      series: {
+        fontSize: "3em"
+      },
+      yAxis: {
+        title: textRating(score)
+      }
+    };
+
+    Highcharts.chart(`day_${day}`, {
+      chart: {
+        type: "gauge",
+        height: opts.height
+      },
+
+      title: {
+        text: opts.title
+      },
+
+      pane: {
+        startAngle: -150,
+        endAngle: 150,
+        background: {
+          backgroundColor: "transparent",
+          borderWidth: 0
+        }
+      },
+
+      plotOptions: {
+        gauge: {
+          animation: false,
+          pivot: {
+            backgroundColor: "transparent"
+          },
+          dial: {
+            backgroundColor: "transparent",
+            baseWidth: 0,
+          },
+        }
+      },
+
+      yAxis: {
+        min: 0,
+        max: 100,
+        minorTickInterval: 0,
+        tickColor: "#ffffff",
+        tickLength: 40,
+        tickPixelInterval: 40,
+        tickWidth: 0,
+        lineWidth: 0,
+        title: {
+          text: opts.yAxis.title,
+          style: {
+            color: "#000000",
+            fontFamily: "NicoPups",
+            fontSize: "16px"
+          }
+        },
+        labels: {
+          ...opts.labels,
+          style: {
+            fontSize: "16px"
+          }
+        },
+        plotBands: [{
+          from: 1,
+          to: score,
+          color: {
+            pattern: {
+              image: "https://usetrmnl.com/images/grayscale/gray-2.png",
+              width: 12,
+              height: 12
+            }
+          },
+          innerRadius: "82%",
+          borderRadius: "50%"
+        }, {
+          from: score + 1,
+          to: 100,
+          color: {
+            pattern: {
+              image: "https://usetrmnl.com/images/grayscale/gray-5.png",
+              width: 12,
+              height: 12
+            }
+          },
+          innerRadius: "82%",
+          borderRadius: "50%",
+        }]
+      },
+
+      series: [{
+        name: "Score",
+        data: [score],
+        dataLabels: {
+          borderWidth: 0,
+          style: {
+            fontSize: opts.series.fontSize,
+            fontWeight: opts.series.fontWeight || "400",
+            fontFamily: opts.series.fontFamily || "inherit"
+          }
+        }
+      }],
+
+      credits: {
+        enabled: false
+      }
+    });
+  }
+
+  function textRating(score) {
+    if (score <= 24) {
+      return "Extreme Fear";
+    } else if (score <= 49) {
+      return "Fear";
+    } else if (score < 54) {
+      return "Neutral";
+    } else if (score < 74) {
+      return "Greed";
+    } else {
+      return "Extreme Greed";
+    }
+  }
+
+  // Create main weekly gauge
+  createGauge(weeklyScore, "all", {
+    title: null,
+    height: "45%",
+    labels: {
+      distance: 15
+    },
+    series: {
+      fontSize: "2em",
+      fontWeight: "550"
+    },
+    yAxis: {
+      title: textRating(weeklyScore)
+    }
+  });
+</script>
