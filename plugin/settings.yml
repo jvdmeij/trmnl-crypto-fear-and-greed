@@ -1,0 +1,19 @@
+---
+strategy: polling
+no_screen_padding: 'no'
+dark_mode: 'no'
+static_data: ''
+polling_verb: get
+polling_url: https://api.alternative.me/fng/?limit=31
+polling_headers: ''
+polling_body: ''
+id: 19728
+custom_fields:
+- keyname: author_bio
+  name: About This Plugin
+  field_type: author_bio
+  category: kpi,finance
+  description: Crypto Fear & Greed Index based on the data from Alternative.me. Created by Jasper, @jasper on TRMNL Discord.
+  email_address: info@jaspervandermeij.com
+name: Crypto Fear & Greed Index
+refresh_interval: 60
